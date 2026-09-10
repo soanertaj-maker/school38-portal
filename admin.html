@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<script>
+    (function checkAdminAuth() {
+        const ADMIN_PASSWORD = "1234"; // Кіру паролі
+
+        let pass = prompt("Админ панеліне кіру үшін парольді енгізіңіз:");
+
+        if (pass !== ADMIN_PASSWORD) {
+            alert("❌ Пароль қате! Басты бетке өтесіз.");
+            window.location.href = "index.html";
+        }
+    })();
+</script>       
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Әкімшілік Бөлімі - №38 ЖОББМ</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="pavlodar-header">
+        <div class="container navbar">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="logo-text">
+                    <h1>ӘКІМШІЛІК БӨЛІМІ</h1>
+                    <span>Павлодар қ. №38 мектебі</span>
+                </div>
+            </div>
+            <a href="index.html" class="admin-btn"><i class="fa-solid fa-house"></i> Басты бетке оралу</a>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 30px; padding-bottom: 50px;">
+
+        <!-- 📅 САБАҚ КЕСТЕСІН КІРІЗУ -->
+        <section class="glass-card">
+            <div class="card-header">
+                <i class="fa-solid fa-calendar-days"></i>
+                <div>
+                    <h2 style="color: var(--text-primary);">Апталық сабақ кестесін қосу / жаңарту</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Сыныпты және апта күнін таңдап, сабақтарды ретімен жазыңыз</p>
+                </div>
+            </div>
+
+            <form id="add-schedule-form">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label for="sched-class">Сыныпты таңдаңыз:</label>
+                        <select id="sched-class" required>
+                            <option value="9А">9 "А" сыныбы</option>
+                            <option value="9Б">9 "Б" сыныбы</option>
+                            <option value="8А">8 "А" сыныбы</option>
+                            <option value="8Ә">8 "Ә" сыныбы</option>
+                            <option value="8Б">8 "Б" сыныбы</option>
+                            <option value="7А">7 "А" сыныбы</option>
+                            <option value="7Ә">7 "Ә" сыныбы</option>
+                            <option value="7Б">7 "Б" сыныбы</option>
+                            <option value="6А">6 "А" сыныбы</option>
+                            <option value="6Ә">6 "Ә" сыныбы</option>
+                            <option value="6Б">6 "Б" сыныбы</option>
+                            <option value="5А">5 "А" сыныбы</option>
+                            <option value="5Б">5 "Б" сыныбы</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sched-day">Апта күні:</label>
+                        <select id="sched-day" required>
+                            <option value="monday">Дүйсенбі</option>
+                            <option value="tuesday">Сейсенбі</option>
+                            <option value="wednesday">Сәрсенбі</option>
+                            <option value="thursday">Бейсенбі</option>
+                            <option value="friday">Жұма</option>
+                            <option value="saturday">Сенбі</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="sched-items">Сабақтар тізімі (Формат: Уақыты | Пән | Кабинет):</label>
+                    <textarea id="sched-items" rows="6" required placeholder="08:00 - 08:45 | Қазақ тілі | 204&#10;08:50 - 09:35 | Алгебра | 310&#10;09:45 - 10:30 | Физика | 108"></textarea>
+                    <small style="color: var(--text-secondary);">Әр сабақты жаңа жолға жазыңыз.</small>
+                </div>
+
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Кестені сақтау</button>
+            </form>
+        </section>
+
+        <!-- 🍽️ АСХАНА МӘЗІРІН ЖҮКТЕУ -->
+        <section class="glass-card">
+            <div class="card-header">
+                <i class="fa-solid fa-utensils"></i>
+                <div>
+                    <h2 style="color: var(--text-primary);">Асхана мәзірін жүктеу (Фото)</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Асхана мәзірінің JPG немесе PNG фотосын таңдап жүктеңіз</p>
+                </div>
+            </div>
+            <form id="add-canteen-form">
+                <div class="form-group">
+                    <label for="canteen-image-file">Мәзір суретін таңдаңыз (.jpg, .jpeg, .png):</label>
+                    <input type="file" id="canteen-image-file" accept="image/*" required style="display: block; width: 100%; padding: 10px; margin-top: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; color: #fff;">
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin-top: 15px;"><i class="fa-solid fa-upload"></i> Мәзір суретін жаңарту</button>
+            </form>
+            
+            <div id="canteen-preview" style="margin-top: 15px; text-align: center;"></div>
+        </section>
+
+        <!-- 📢 ХАБАРЛАНДЫРУЛАРДЫ БАСҚАРУ -->
+        <section class="glass-card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h2 style="display: inline-block; margin-left: 8px;">Мектеп хабарландыруын қосу</h2>
+                </div>
+                <button type="button" onclick="clearAllNews()" style="background: rgba(255, 50, 50, 0.2); color: #ff4d4d; border: 1px solid rgba(255, 50, 50, 0.4); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                    <i class="fa-solid fa-trash-can"></i> Барлығын тазалау
+                </button>
+            </div>
+
+            <form id="add-news-form" style="margin-bottom: 25px;">
+                <div class="form-group">
+                    <label for="news-title">Тақырыбы:</label>
+                    <input type="text" id="news-title" required placeholder="Хабарландыру тақырыбы">
+                </div>
+                <div class="form-group">
+                    <label for="news-content">Мазмұны:</label>
+                    <textarea id="news-content" rows="3" required placeholder="Толық мәтіні..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Жариялау</button>
+            </form>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 20px 0;">
+
+            <h3 style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-list-check"></i> Белсенді хабарландырулар тізімі:</h3>
+            
+            <div id="admin-news-container" style="display: grid; gap: 15px;">
+                <!-- Деректер script.js арқылы жүктеледі -->
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

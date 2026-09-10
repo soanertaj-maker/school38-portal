@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>№38 Жалпы орта білім беру мектебі</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ЖОҒАРҒЫ МӘЗІР -->
+    <header class="pavlodar-header">
+        <div class="container navbar">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-school"></i></div>
+                <div class="logo-text">
+                    <h1>№38 МЕКТЕП</h1>
+                    <span>Павлодар қаласы</span>
+                </div>
+            </div>
+            <a href="admin.html" class="admin-btn"><i class="fa-solid fa-lock"></i> Әкімші панелі</a>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 30px; padding-bottom: 50px;">
+
+        <!-- БАННЕР -->
+        <section class="glass-card" style="text-align: center; padding: 40px 20px;">
+            <h1 style="font-size: 2.2rem; color: var(--accent-gold); margin-bottom: 10px;">Заманауи білім – жарқын болашақ кепілі</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">№38 жалпы орта білім беру мектебінің ақпараттық порталына қош келдіңіздер!</p>
+        </section>
+
+        <!-- 📅 САБАҚ КЕСТЕСІ -->
+        <section class="glass-card" id="schedule-section">
+            <div class="card-header">
+                <i class="fa-solid fa-calendar-check"></i>
+                <div>
+                    <h2>Сабақ кестесі</h2>
+                    <p class="subtitle" id="current-day-label">Күн сайын автоматты жаңартылып тұрады</p>
+                </div>
+            </div>
+
+            <!-- ТАҢДАУ ПАНЕЛІ -->
+            <div class="filter-group">
+                <div class="form-group">
+                    <label for="select-class-view"><i class="fa-solid fa-graduation-cap"></i> Сыныпты таңдаңыз:</label>
+                    <select id="select-class-view">
+                            <option value="9А">9 "А" сыныбы</option>
+                            <option value="9Б">9 "Б" сыныбы</option>
+                            <option value="8А">8 "А" сыныбы</option>
+                            <option value="8Ә">8 "Ә" сыныбы</option>
+                            <option value="8Б">8 "Б" сыныбы</option>
+                            <option value="7А">7 "А" сыныбы</option>
+                            <option value="7Ә">7 "Ә" сыныбы</option>
+                            <option value="7Б">7 "Б" сыныбы</option>
+                            <option value="6А">6 "А" сыныбы</option>
+                            <option value="6Ә">6 "Ә" сыныбы</option>
+                            <option value="6Б">6 "Б" сыныбы</option>
+                            <option value="5А">5 "А" сыныбы</option>
+                            <option value="5Б">5 "Б" сыныбы</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="select-day-view"><i class="fa-solid fa-calendar-day"></i> Апта күнін таңдаңыз:</label>
+                    <select id="select-day-view">
+                        <option value="today">Бүгінгі күн (Автоматты)</option>
+                        <option value="monday">Дүйсенбі</option>
+                        <option value="tuesday">Сейсенбі</option>
+                        <option value="wednesday">Сәрсенбі</option>
+                        <option value="thursday">Бейсенбі</option>
+                        <option value="friday">Жұма</option>
+                        <option value="saturday">Сенбі</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Уақыты</th>
+                            <th>Пән</th>
+                            <th>Кабинет</th>
+                        </tr>
+                    </thead>
+                    <tbody id="today-schedule-body">
+                        <!-- Деректер script.js арқылы жүктеледі -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 🍽️ АСХАНА МӘЗІРІ (ФОТО) -->
+        <section class="glass-card">
+            <div class="card-header">
+                <i class="fa-solid fa-utensils"></i>
+                <h2>Асхана мәзірі</h2>
+            </div>
+            <div id="canteen-container" style="width: 100%; text-align: center; overflow: hidden; border-radius: 12px;">
+                <!-- Деректер script.js арқылы жүктеледі -->
+            </div>
+        </section>
+
+        <!-- 📢 ХАБАРЛАНДЫРУЛАР -->
+        <section class="glass-card">
+            <div class="card-header">
+                <i class="fa-solid fa-bullhorn"></i>
+                <h2>Хабарландырулар мен жаңалықтар</h2>
+            </div>
+            <div id="news-container" style="display: grid; gap: 15px;">
+                <!-- Деректер script.js арқылы жүктеледі -->
+            </div>
+        </section>
+
+        <!-- 🏫 МЕКТЕП ТУРАЛЫ -->
+        <section class="glass-card">
+            <div class="card-header">
+                <i class="fa-solid fa-landmark"></i>
+                <h2>Мектеп туралы</h2>
+            </div>
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+                №38 мектеп — заманауи технологиялар мен сапалы білім беру әдістемелері тоғысқан білім ордасы. Мектепте оқушылардың бағдарламалау, олимпиадалық дайындық және шығармашылық бағыттарын дамытуға барлық жағдай жасалған.
+            </p>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
