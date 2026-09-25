@@ -1,6 +1,10 @@
 // ==========================================
 // 1. БАСТАПҚЫ ДЕРЕКТЕР ЖӘНЕ КӨМЕКШІ ФУНКЦИЯЛАР
 // ==========================================
+
+// ⚠️ Осы жерге imgbb.com сайтынан алған API кілтіңізді қойыңыз:
+const IMGBB_API_KEY = "8aa6b18e631f2a70f12623513f63c0c6"; 
+
 const dayNamesKazakh = {
     "sunday": "Жексенбі",
     "monday": "Дүйсенбі",
@@ -34,7 +38,6 @@ async function renderSchedule() {
 
     if (!classSelect || !tableBody) return;
 
-    // Ескі localStorage дерегін тазалау
     localStorage.removeItem('customSchedules');
 
     const selectedClass = classSelect.value;
@@ -54,12 +57,10 @@ async function renderSchedule() {
     let daySchedule = null;
 
     try {
-        // schedule.json файлын кэшсіз жүктеу (v=...)
         const response = await fetch('schedule.json?v=' + Date.now());
         if (response.ok) {
             const fileData = await response.json();
 
-            // Сынып атын нормализация арқылы табу
             const matchedKey = Object.keys(fileData).find(
                 key => cleanClassString(key) === cleanClassString(selectedClass)
             );
@@ -74,7 +75,6 @@ async function renderSchedule() {
         console.error("schedule.json жүктелмеді немесе JSON форматында қате бар:", e);
     }
 
-    // Егер дерек табылмаса
     if (!daySchedule || daySchedule.length === 0) {
         tableBody.innerHTML = `
             <tr>
@@ -86,7 +86,6 @@ async function renderSchedule() {
         return;
     }
 
-    // Деректерді кестеге шығару
     daySchedule.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -143,21 +142,49 @@ function initAdminPanel() {
         });
     }
 
+    // Асхана мәзірін онлайн сурет хостингіне (ImgBB) авто-жүктеу
     const canteenForm = document.getElementById('add-canteen-form');
     if (canteenForm) {
-        canteenForm.addEventListener('submit', (e) => {
+        canteenForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const fileInput = document.getElementById('canteen-image-file');
             const file = fileInput.files[0];
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    localStorage.setItem('canteenMenuImage', evt.target.result);
-                    alert('✅ Мәзір суреті жаңартылды!');
+            if (!file) {
+                alert('Өтініш, сурет файлын таңдаңыз!');
+                return;
+            }
+
+            const submitBtn = canteenForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Серверге жүктелуде... Күте тұрыңыз";
+            submitBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const imageUrl = result.data.url;
+                    localStorage.setItem('canteenMenuImage', imageUrl);
+                    alert('✅ Мәзір суреті сәтті жаңартылды! Барлық пайдаланушыға көрінеді.');
                     location.reload();
-                };
-                reader.readAsDataURL(file);
+                } else {
+                    alert('❌ Суретті жүктеу қатесі: ' + (result.error ? result.error.message : 'Белгісіз қате'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('❌ Желіде қате пайда болды. Интернет байланысын тексеріңіз.');
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
             }
         });
     }
