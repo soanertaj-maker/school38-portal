@@ -1,5 +1,5 @@
 // ==========================================
-// 1. БАСТАПҚЫ ДЕРЕКТЕР
+// 1. БАСТАПҚЫ ДЕРЕКТЕР ЖӘНЕ КӨМЕКШІ ФУНКЦИЯЛАР
 // ==========================================
 const dayNamesKazakh = {
     "sunday": "Жексенбі",
@@ -17,6 +17,12 @@ function getTodayKey() {
     return dayKeys[new Date().getDay()];
 }
 
+// Әріптерді нормализациялау (кириллица/латиница Ә/Ə айырмашылығын жою)
+function cleanClassString(str) {
+    if (!str) return '';
+    return str.replace(/Ə/g, 'Ә').replace(/ə/g, 'ә').trim().toLowerCase();
+}
+
 // ==========================================
 // 2. БАСТЫ БЕТТІ ЖҮКТЕУ (INDEX.HTML)
 // ==========================================
@@ -28,6 +34,9 @@ async function renderSchedule() {
 
     if (!classSelect || !tableBody) return;
 
+    // Ескі localStorage дерегін тазалау
+    localStorage.removeItem('customSchedules');
+
     const selectedClass = classSelect.value;
     let selectedDay = daySelect.value;
 
@@ -36,7 +45,9 @@ async function renderSchedule() {
     }
 
     const dayName = dayNamesKazakh[selectedDay] || selectedDay;
-    label.innerText = `Көрсетіліп тұр: ${selectedClass} сыныбы — ${dayName}`;
+    if (label) {
+        label.innerText = `Көрсетіліп тұр: ${selectedClass} сыныбы — ${dayName}`;
+    }
 
     tableBody.innerHTML = '';
 
@@ -44,21 +55,23 @@ async function renderSchedule() {
 
     try {
         // schedule.json файлын кэшсіз жүктеу (v=...)
-        const response = await fetch('schedule.json?v=' + new Date().getTime());
+        const response = await fetch('schedule.json?v=' + Date.now());
         if (response.ok) {
             const fileData = await response.json();
 
-            // Сынып атын регистрге және бос орындарға қарамастан табу
+            // Сынып атын нормализация арқылы табу
             const matchedKey = Object.keys(fileData).find(
-                key => key.trim().toLowerCase() === selectedClass.trim().toLowerCase()
+                key => cleanClassString(key) === cleanClassString(selectedClass)
             );
 
-            if (matchedKey && fileData[matchedKey][selectedDay]) {
+            if (matchedKey && fileData[matchedKey] && fileData[matchedKey][selectedDay]) {
                 daySchedule = fileData[matchedKey][selectedDay];
             }
+        } else {
+            console.error("schedule.json файлы табылмады!");
         }
     } catch (e) {
-        console.error("schedule.json жүктелмеді:", e);
+        console.error("schedule.json жүктелмеді немесе JSON форматында қате бар:", e);
     }
 
     // Егер дерек табылмаса
