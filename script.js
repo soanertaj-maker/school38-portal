@@ -1,9 +1,6 @@
 // ==========================================
 // 2. БАСТЫ БЕТТІ ЖҮКТЕУ (INDEX.HTML)
 // ==========================================
-// ==========================================
-// 2. БАСТЫ БЕТТІ ЖҮКТЕУ (INDEX.HTML)
-// ==========================================
 async function renderSchedule() {
     const classSelect = document.getElementById('select-class-view');
     const daySelect = document.getElementById('select-day-view');
