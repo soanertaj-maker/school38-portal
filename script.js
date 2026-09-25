@@ -1,6 +1,9 @@
 // ==========================================
 // 2. БАСТЫ БЕТТІ ЖҮКТЕУ (INDEX.HTML)
 // ==========================================
+// ==========================================
+// 2. БАСТЫ БЕТТІ ЖҮКТЕУ (INDEX.HTML)
+// ==========================================
 async function renderSchedule() {
     const classSelect = document.getElementById('select-class-view');
     const daySelect = document.getElementById('select-day-view');
@@ -24,17 +27,17 @@ async function renderSchedule() {
     let daySchedule = null;
 
     try {
-        // 1. Сначала пробуем загрузить из файла schedule.json
+        // schedule.json файлынан кестені жүктеп алу
         const response = await fetch('schedule.json');
         if (response.ok) {
             const fileData = await response.json();
             daySchedule = fileData[selectedClass]?.[selectedDay];
         }
     } catch (e) {
-        console.log("Файл schedule.json жүктелмеді, резервтік деректер қолданылады");
+        console.log("JSON файлы жүктелмеді, резервтік деректер қолданылады");
     }
 
-    // 2. Если в файле нет данных, проверяем localStorage или defaultSchedules
+    // Егер JSON файлында дерек жоқ болса, стандартты кестені тексеру
     if (!daySchedule) {
         const customSchedules = JSON.parse(localStorage.getItem('customSchedules')) || {};
         daySchedule = customSchedules[selectedClass]?.[selectedDay] || defaultSchedules[selectedClass]?.[selectedDay];
