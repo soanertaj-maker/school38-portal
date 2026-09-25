@@ -2,12 +2,9 @@
 // 1. БАСТАПҚЫ ДЕРЕКТЕР ЖӘНЕ КӨМЕКШІ ФУНКЦИЯЛАР
 // ==========================================
 
-// ImgBB API кілті
 const IMGBB_API_KEY = "8aa6b18e631f2a70f12623513f63c0c6"; 
-
-// ⚠️ JSONBin кілттерін осы жерге қойыңыз:
-const JSONBIN_BIN_ID = "6ab64ec9ac6210605af3ea32"; 
-const JSONBIN_API_KEY = "$2a$10$MkodS7RsiDGodZmgznEsD.vz2dMcga9sKGifdQv4BCqaRiwlO0DEe"; 
+// ⚠️ Вставьте ваш ID с npoint.io вместо ВАШ_NPOINT_ID (например: "a1b2c3d4e5"):
+const NPOINT_ID = "https://www.npoint.io/docs/c361eb377ce6a54250bb"; 
 
 const dayNamesKazakh = {
     "sunday": "Жексенбі",
@@ -25,7 +22,6 @@ function getTodayKey() {
     return dayKeys[new Date().getDay()];
 }
 
-// Әріптерді нормализациялау (кириллица/латиница Ә/Ə айырмашылығын жою)
 function cleanClassString(str) {
     if (!str) return '';
     return str.replace(/Ə/g, 'Ә').replace(/ə/g, 'ә').trim().toLowerCase();
@@ -103,15 +99,12 @@ async function renderSchedule() {
 }
 
 async function loadCanteenAndNews() {
-    // Асхана суретін онлайн JSONBin ортақ базасынан алу
     const canteenContainer = document.getElementById('canteen-container');
     if (canteenContainer) {
         try {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': JSONBIN_API_KEY }
-            });
+            const res = await fetch(`https://api.npoint.io/${NPOINT_ID}`);
             const data = await res.json();
-            const imageUrl = (data.record && data.record.canteenImage) ? data.record.canteenImage : null;
+            const imageUrl = data ? data.canteenImage : null;
 
             if (imageUrl) {
                 canteenContainer.innerHTML = `<img src="${imageUrl}" alt="Асхана мәзірі" style="width: 100%; max-width: 800px; height: auto; border-radius: 10px; border: 1px solid var(--border-color); display: block; margin: 0 auto;">`;
@@ -124,7 +117,6 @@ async function loadCanteenAndNews() {
         }
     }
 
-    // Жаңалықтарды шығару
     const newsContainer = document.getElementById('news-container');
     if (newsContainer) {
         let newsList = JSON.parse(localStorage.getItem('newsList')) || [
@@ -156,7 +148,6 @@ function initAdminPanel() {
         });
     }
 
-    // Асхана мәзірін ImgBB + JSONBin ортақ сақтау базасына жүктеу
     const canteenForm = document.getElementById('add-canteen-form');
     if (canteenForm) {
         canteenForm.addEventListener('submit', async (e) => {
@@ -175,7 +166,7 @@ function initAdminPanel() {
             submitBtn.disabled = true;
 
             try {
-                // 1. Суретті ImgBB-ге жүктеу
+                // 1. Загрузка фото в ImgBB
                 const formData = new FormData();
                 formData.append('image', file);
 
@@ -189,12 +180,11 @@ function initAdminPanel() {
                 if (result.success) {
                     const imageUrl = result.data.url;
 
-                    // 2. Сілтемені JSONBin ортақ базасына сақтау
-                    await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-                        method: 'PUT',
+                    // 2. Сохранение ссылки в npoint.io
+                    await fetch(`https://api.npoint.io/${NPOINT_ID}`, {
+                        method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': JSONBIN_API_KEY
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ canteenImage: imageUrl })
                     });
