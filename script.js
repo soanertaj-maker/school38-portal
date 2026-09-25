@@ -2,8 +2,12 @@
 // 1. БАСТАПҚЫ ДЕРЕКТЕР ЖӘНЕ КӨМЕКШІ ФУНКЦИЯЛАР
 // ==========================================
 
-// ⚠️ Осы жерге imgbb.com сайтынан алған API кілтіңізді қойыңыз:
+// ImgBB API кілті
 const IMGBB_API_KEY = "8aa6b18e631f2a70f12623513f63c0c6"; 
+
+// ⚠️ JSONBin кілттерін осы жерге қойыңыз:
+const JSONBIN_BIN_ID = "6ab64ec9ac6210605af3ea32"; 
+const JSONBIN_API_KEY = "$2a$10$MkodS7RsiDGodZmgznEsD.vz2dMcga9sKGifdQv4BCqaRiwlO0DEe"; 
 
 const dayNamesKazakh = {
     "sunday": "Жексенбі",
@@ -98,15 +102,25 @@ async function renderSchedule() {
     });
 }
 
-function loadCanteenAndNews() {
-    // Асхана суретін шығару
+async function loadCanteenAndNews() {
+    // Асхана суретін онлайн JSONBin ортақ базасынан алу
     const canteenContainer = document.getElementById('canteen-container');
     if (canteenContainer) {
-        const savedImage = localStorage.getItem('canteenMenuImage');
-        if (savedImage) {
-            canteenContainer.innerHTML = `<img src="${savedImage}" alt="Асхана мәзірі" style="width: 100%; max-width: 800px; height: auto; border-radius: 10px; border: 1px solid var(--border-color); display: block; margin: 0 auto;">`;
-        } else {
-            canteenContainer.innerHTML = `<p style="color: var(--text-secondary); padding: 20px;">Асхана мәзірі әлі жүктелмеген.</p>`;
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            const data = await res.json();
+            const imageUrl = (data.record && data.record.canteenImage) ? data.record.canteenImage : null;
+
+            if (imageUrl) {
+                canteenContainer.innerHTML = `<img src="${imageUrl}" alt="Асхана мәзірі" style="width: 100%; max-width: 800px; height: auto; border-radius: 10px; border: 1px solid var(--border-color); display: block; margin: 0 auto;">`;
+            } else {
+                canteenContainer.innerHTML = `<p style="color: var(--text-secondary); padding: 20px;">Асхана мәзірі әлі жүктелмеген.</p>`;
+            }
+        } catch (e) {
+            console.error("Мәзірді жүктеу қатесі:", e);
+            canteenContainer.innerHTML = `<p style="color: var(--text-secondary); padding: 20px;">Асхана мәзірін жүктеуде қате пайда болды.</p>`;
         }
     }
 
@@ -142,7 +156,7 @@ function initAdminPanel() {
         });
     }
 
-    // Асхана мәзірін онлайн сурет хостингіне (ImgBB) авто-жүктеу
+    // Асхана мәзірін ImgBB + JSONBin ортақ сақтау базасына жүктеу
     const canteenForm = document.getElementById('add-canteen-form');
     if (canteenForm) {
         canteenForm.addEventListener('submit', async (e) => {
@@ -161,6 +175,7 @@ function initAdminPanel() {
             submitBtn.disabled = true;
 
             try {
+                // 1. Суретті ImgBB-ге жүктеу
                 const formData = new FormData();
                 formData.append('image', file);
 
@@ -173,8 +188,18 @@ function initAdminPanel() {
 
                 if (result.success) {
                     const imageUrl = result.data.url;
-                    localStorage.setItem('canteenMenuImage', imageUrl);
-                    alert('✅ Мәзір суреті сәтті жаңартылды! Барлық пайдаланушыға көрінеді.');
+
+                    // 2. Сілтемені JSONBin ортақ базасына сақтау
+                    await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': JSONBIN_API_KEY
+                        },
+                        body: JSON.stringify({ canteenImage: imageUrl })
+                    });
+
+                    alert('✅ Мәзір суреті сәтті жаңартылды! Енді барлық пайдаланушылар мен құрылғыларда бірдей көрінеді.');
                     location.reload();
                 } else {
                     alert('❌ Суретті жүктеу қатесі: ' + (result.error ? result.error.message : 'Белгісіз қате'));
